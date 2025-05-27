@@ -10,7 +10,7 @@
     Roam.initLobbyEmbed({
       url: 'https://ro.am/fcrmedia/',
       parentElement: document.getElementById('roam-lobby'),
-      lobbyConfiguration: 'default',
+      lobbyConfiguration: 'booking_only',
       accentColor: '#0059DC',
       theme: 'dark',
       onSizeChange: function(w, h) {
