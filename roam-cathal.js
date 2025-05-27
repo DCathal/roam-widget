@@ -8,7 +8,7 @@
   script.src = 'https://ro.am/lobbylinks/embed.js';
   script.onload = function() {
     Roam.initLobbyEmbed({
-      url: 'https://ro.am/cathal/',
+      url: 'https://ro.am/fcrmedia/',
       parentElement: document.getElementById('roam-lobby'),
       lobbyConfiguration: 'booking_only',
       accentColor: '#0059DC',
