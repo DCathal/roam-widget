@@ -1,17 +1,18 @@
-(function() {
-  var iframe = document.createElement('iframe');
-  iframe.src = 'https://ro.am/fcrmedia/';
-  iframe.style.width = '120%';
-  iframe.style.height = '1200px';
-  iframe.style.border = '0';
-  iframe.allow = 'camera; microphone; autoplay';
-  iframe.setAttribute('title', 'Live Chat with FCR Media');
+<!-- Roam inline widget begin -->
+<div id="roam-lobby" style="width: 300px;"></div>
+<script type="text/javascript" src="https://ro.am/lobbylinks/embed.js"></script>
+<script>
+  const parentElement = document.getElementById("roam-lobby");
+  Roam.initLobbyEmbed({
+    url: "https://ro.am/cathal/lobby-2",
+    parentElement,
+    lobbyConfiguration: "drop_in_button",
+    theme: "dark",
+    onSizeChange: (width, height) => {
+      parentElement.style.height = `${height}px`;
+    },
+  });
+</script>
+<!-- Roam inline widget end -->
 
-  // Optional: Add a container div
-  var container = document.createElement('div');
-  container.style.maxWidth = '500px';
-  container.style.margin = '0 auto';
-  container.appendChild(iframe);
 
-  document.currentScript.parentNode.insertBefore(container, document.currentScript);
-})();
