@@ -2,18 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Roam FCRMedia Widget</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Widget Previews</title>
   <style>
     body {
       background-color: #121212;
       color: white;
-      font-family: sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin-bottom: 2rem;
+    }
+    .widget-section {
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: #1e1e1e;
+      border-radius: 12px;
+    }
+    .widget-section h2 {
+      margin-bottom: 1.5rem;
+      color: #00d4aa;
+    }
+    .widget-section p {
+      color: #a0aec0;
+      margin-bottom: 1rem;
+    }
+    a {
+      color: #00d4aa;
     }
   </style>
 </head>
 <body>
-  <h1>Roam FCRMedia Widget Preview</h1>
-  <script src="https://dcathal.github.io/roam-widget/roam-fcrmedia.js"></script>
+  <h1>Widget Previews</h1>
+
+  <div class="widget-section">
+    <h2>GetLocal.ie Product Search</h2>
+    <p>Search for products from local Irish businesses. <a href="getlocal-search.html">View full page version</a></p>
+    <script src="getlocal-widget.js" data-theme="dark"></script>
+  </div>
+
+  <div class="widget-section">
+    <h2>Roam FCRMedia Widget</h2>
+    <p>Booking widget powered by Roam.</p>
+    <script src="https://dcathal.github.io/roam-widget/roam-fcrmedia.js"></script>
+  </div>
 </body>
 </html>
