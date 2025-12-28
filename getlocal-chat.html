@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GetLocal.ie - Shop Local, Compare Prices</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary: #00d4aa;
+      --primary-dark: #00b894;
+      --bg-dark: #0f1419;
+      --bg-card: #1a1f26;
+      --bg-input: #2d333b;
+      --text-primary: #ffffff;
+      --text-secondary: #8b949e;
+      --border: #30363d;
+      --user-bubble: #00d4aa;
+      --bot-bubble: #2d333b;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .header-text h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .header-text p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Chat Container */
+    .chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Messages */
+    .message {
+      display: flex;
+      gap: 10px;
+      max-width: 85%;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.bot {
+      align-self: flex-start;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .message.bot .message-avatar {
+      background: var(--primary);
+    }
+
+    .message.user .message-avatar {
+      background: var(--bg-input);
+    }
+
+    .message-content {
+      padding: 12px 16px;
+      border-radius: 18px;
+      line-height: 1.5;
+    }
+
+    .message.bot .message-content {
+      background: var(--bot-bubble);
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.user .message-content {
+      background: var(--user-bubble);
+      color: #000;
+      border-bottom-right-radius: 4px;
+    }
+
+    /* Quick Replies */
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .quick-reply {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .quick-reply:hover {
+      background: var(--primary);
+      color: #000;
+    }
+
+    /* Category Cards */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .category-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .category-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .category-card .icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .category-card .label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* Product Cards */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .product-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .product-card:hover {
+      border-color: var(--primary);
+    }
+
+    .product-card .title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .product-card .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* Search Result Link */
+    .search-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary);
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 12px;
+      transition: background 0.2s ease;
+    }
+
+    .search-link:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Input Area */
+    .input-area {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 16px 20px;
+    }
+
+    .input-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      gap: 12px;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 14px 20px;
+      font-size: 1rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .chat-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .chat-input:focus {
+      border-color: var(--primary);
+    }
+
+    .send-btn {
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+    }
+
+    .send-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .send-btn svg {
+      width: 20px;
+      height: 20px;
+      color: #000;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 8px 0;
+    }
+
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background: var(--text-secondary);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+
+    .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    /* Recent Searches */
+    .recent-searches {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .recent-searches h4 {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .recent-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .recent-item:hover {
+      background: var(--bg-input);
+    }
+
+    .recent-item .icon {
+      color: var(--text-secondary);
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .message {
+        max-width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-icon">🛒</div>
+    <div class="header-text">
+      <h1>GetLocal.ie</h1>
+      <p>Compare prices from local Irish shops</p>
+    </div>
+  </header>
+
+  <div class="chat-container" id="chatContainer">
+    <!-- Welcome Message -->
+    <div class="message bot">
+      <div class="message-avatar">🛒</div>
+      <div class="message-content">
+        <div>Hey! 👋 I'm here to help you find the best deals from local Irish shops.</div>
+        <div style="margin-top: 8px;">What are you looking for today?</div>
+
+        <div class="category-grid">
+          <div class="category-card" data-search="electronics">
+            <div class="icon">📱</div>
+            <div class="label">Electronics</div>
+          </div>
+          <div class="category-card" data-search="home-garden">
+            <div class="icon">🏠</div>
+            <div class="label">Home & Garden</div>
+          </div>
+          <div class="category-card" data-search="fashion">
+            <div class="icon">👕</div>
+            <div class="label">Fashion</div>
+          </div>
+          <div class="category-card" data-search="sports">
+            <div class="icon">⚽</div>
+            <div class="label">Sports</div>
+          </div>
+          <div class="category-card" data-search="health-beauty">
+            <div class="icon">💄</div>
+            <div class="label">Health & Beauty</div>
+          </div>
+          <div class="category-card" data-search="toys-games">
+            <div class="icon">🎮</div>
+            <div class="label">Toys & Games</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <form class="input-wrapper" id="chatForm">
+      <input
+        type="text"
+        class="chat-input"
+        id="chatInput"
+        placeholder="Search for any product..."
+        autocomplete="off"
+        autofocus
+      >
+      <button type="submit" class="send-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 2L11 13"></path>
+          <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  <script>
+    (function() {
+      var chatContainer = document.getElementById('chatContainer');
+      var chatForm = document.getElementById('chatForm');
+      var chatInput = document.getElementById('chatInput');
+
+      // Popular searches for suggestions
+      var popularSearches = {
+        'electronics': ['iPhone', 'Laptop', 'Headphones', 'Smart TV', 'Tablet'],
+        'home-garden': ['Furniture', 'Garden Tools', 'Lighting', 'Bedding', 'Kitchen'],
+        'fashion': ['Shoes', 'Jackets', 'Dresses', 'Watches', 'Bags'],
+        'sports': ['Running Shoes', 'Gym Equipment', 'Bikes', 'Football', 'Golf'],
+        'health-beauty': ['Skincare', 'Makeup', 'Vitamins', 'Hair Care', 'Perfume'],
+        'toys-games': ['LEGO', 'Board Games', 'Consoles', 'Dolls', 'Puzzles']
+      };
+
+      // Recent searches (from localStorage)
+      var recentSearches = JSON.parse(localStorage.getItem('getlocal_recent') || '[]');
+
+      function saveSearch(query) {
+        recentSearches = recentSearches.filter(function(s) { return s !== query; });
+        recentSearches.unshift(query);
+        recentSearches = recentSearches.slice(0, 5);
+        localStorage.setItem('getlocal_recent', JSON.stringify(recentSearches));
+      }
+
+      function addMessage(content, isUser) {
+        var message = document.createElement('div');
+        message.className = 'message ' + (isUser ? 'user' : 'bot');
+        message.innerHTML =
+          '<div class="message-avatar">' + (isUser ? '👤' : '🛒') + '</div>' +
+          '<div class="message-content">' + content + '</div>';
+        chatContainer.appendChild(message);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        return message;
+      }
+
+      function showTyping() {
+        var typing = document.createElement('div');
+        typing.className = 'message bot';
+        typing.id = 'typingIndicator';
+        typing.innerHTML =
+          '<div class="message-avatar">🛒</div>' +
+          '<div class="message-content">' +
+            '<div class="typing-indicator">' +
+              '<span></span><span></span><span></span>' +
+            '</div>' +
+          '</div>';
+        chatContainer.appendChild(typing);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      function hideTyping() {
+        var typing = document.getElementById('typingIndicator');
+        if (typing) typing.remove();
+      }
+
+      function generateSearchUrl(query) {
+        var encodedQuery = query.trim().replace(/\s+/g, '-').toLowerCase();
+        return 'https://getlocal.ie/q/' + encodeURIComponent(encodedQuery);
+      }
+
+      function performSearch(query) {
+        // Add user message
+        addMessage(query, true);
+        saveSearch(query);
+
+        // Show typing
+        showTyping();
+
+        // Simulate response delay
+        setTimeout(function() {
+          hideTyping();
+
+          var url = generateSearchUrl(query);
+          var suggestions = [];
+
+          // Find related suggestions
+          Object.keys(popularSearches).forEach(function(cat) {
+            popularSearches[cat].forEach(function(item) {
+              if (item.toLowerCase().indexOf(query.toLowerCase()) !== -1 ||
+                  query.toLowerCase().indexOf(item.toLowerCase()) !== -1) {
+                suggestions.push(item);
+              }
+            });
+          });
+
+          var responseContent =
+            '<div>Found results for <strong>"' + query + '"</strong> from local Irish shops!</div>' +
+            '<a href="' + url + '" target="_blank" class="search-link">' +
+              '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>' +
+              'View ' + query + ' deals' +
+            '</a>';
+
+          // Add related suggestions
+          if (suggestions.length > 0 || recentSearches.length > 1) {
+            responseContent += '<div class="quick-replies">';
+
+            var relatedItems = suggestions.length > 0 ? suggestions.slice(0, 3) :
+              ['Compare prices', 'Best deals', 'Local shops'];
+
+            relatedItems.forEach(function(item) {
+              responseContent += '<button class="quick-reply" data-query="' + query + ' ' + item + '">' + item + '</button>';
+            });
+
+            responseContent += '</div>';
+          }
+
+          addMessage(responseContent, false);
+        }, 800);
+      }
+
+      function handleCategoryClick(category) {
+        var categoryNames = {
+          'electronics': 'Electronics',
+          'home-garden': 'Home & Garden',
+          'fashion': 'Fashion',
+          'sports': 'Sports',
+          'health-beauty': 'Health & Beauty',
+          'toys-games': 'Toys & Games'
+        };
+
+        var name = categoryNames[category] || category;
+        addMessage('Show me ' + name, true);
+
+        showTyping();
+
+        setTimeout(function() {
+          hideTyping();
+
+          var items = popularSearches[category] || [];
+          var responseContent =
+            '<div>Here are popular <strong>' + name + '</strong> searches:</div>' +
+            '<div class="quick-replies">';
+
+          items.forEach(function(item) {
+            responseContent += '<button class="quick-reply" data-query="' + item + '">' + item + '</button>';
+          });
+
+          responseContent += '</div>' +
+            '<div style="margin-top: 12px; color: var(--text-secondary); font-size: 0.9rem;">Or type your own search below 👇</div>';
+
+          addMessage(responseContent, false);
+        }, 600);
+      }
+
+      // Form submit
+      chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var query = chatInput.value.trim();
+        if (query) {
+          performSearch(query);
+          chatInput.value = '';
+        }
+      });
+
+      // Category card clicks
+      document.addEventListener('click', function(e) {
+        var categoryCard = e.target.closest('.category-card');
+        if (categoryCard) {
+          var search = categoryCard.getAttribute('data-search');
+          handleCategoryClick(search);
+        }
+
+        var quickReply = e.target.closest('.quick-reply');
+        if (quickReply) {
+          var query = quickReply.getAttribute('data-query');
+          performSearch(query);
+        }
+
+        var productCard = e.target.closest('.product-card');
+        if (productCard) {
+          var search = productCard.getAttribute('data-search');
+          if (search) performSearch(search);
+        }
+      });
+
+      // Show recent searches if any
+      if (recentSearches.length > 0) {
+        setTimeout(function() {
+          var recentContent =
+            '<div class="recent-searches">' +
+              '<h4>Your Recent Searches</h4>';
+
+          recentSearches.slice(0, 3).forEach(function(search) {
+            recentContent +=
+              '<div class="recent-item" data-search="' + search + '">' +
+                '<span class="icon">🕐</span>' +
+                '<span>' + search + '</span>' +
+              '</div>';
+          });
+
+          recentContent += '</div>';
+
+          var welcomeMsg = document.querySelector('.message.bot .message-content');
+          if (welcomeMsg) {
+            welcomeMsg.innerHTML += recentContent;
+          }
+
+          // Add click handlers for recent items
+          document.querySelectorAll('.recent-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+              var query = this.getAttribute('data-search');
+              performSearch(query);
+            });
+          });
+        }, 100);
+      }
+    })();
+  </script>
+</body>
+</html>
