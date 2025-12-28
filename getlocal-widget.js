@@ -146,8 +146,8 @@
     e.preventDefault();
     var query = input.value.trim();
     if (query) {
-      var encodedQuery = encodeURIComponent(query).replace(/%20/g, '-');
-      window.open(config.baseUrl + encodedQuery, '_blank');
+      var encodedQuery = query.replace(/\s+/g, '-').toLowerCase();
+      window.open(config.baseUrl + encodeURIComponent(encodedQuery), '_blank');
     }
   });
 })();

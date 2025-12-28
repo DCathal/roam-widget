@@ -207,8 +207,8 @@
 
       function performSearch(query) {
         if (query && query.trim()) {
-          var encodedQuery = encodeURIComponent(query.trim()).replace(/%20/g, '-');
-          window.open('https://getlocal.ie/q/' + encodedQuery, '_blank');
+          var encodedQuery = query.trim().replace(/\s+/g, '-').toLowerCase();
+          window.open('https://getlocal.ie/q/' + encodeURIComponent(encodedQuery), '_blank');
         }
       }
 
