@@ -131,7 +131,12 @@
   ].join('');
 
   // Insert into DOM
-  scriptTag.parentNode.insertBefore(container, scriptTag);
+  if (scriptTag && scriptTag.parentNode) {
+    scriptTag.parentNode.insertBefore(container, scriptTag);
+  } else {
+    // Fallback for older browsers or async loading
+    document.body.appendChild(container);
+  }
 
   // Event handling
   var form = container.querySelector('.getlocal-search-form');
