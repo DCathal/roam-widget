@@ -146,7 +146,7 @@
     e.preventDefault();
     var query = input.value.trim();
     if (query) {
-      var encodedQuery = encodeURIComponent(query).replace(/%20/g, '+');
+      var encodedQuery = encodeURIComponent(query).replace(/%20/g, '-');
       window.open(config.baseUrl + encodedQuery, '_blank');
     }
   });
